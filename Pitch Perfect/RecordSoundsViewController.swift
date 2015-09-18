@@ -9,7 +9,7 @@
 import UIKit
 import AVFoundation
 
-class RecordSoundsViewController: UIViewController {
+class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
 
     @IBOutlet weak var recordButton: UIButton!
     @IBOutlet weak var stopRecordingButton: UIButton!
@@ -35,7 +35,7 @@ class RecordSoundsViewController: UIViewController {
 
     @IBAction func startRecording(sender: UIButton) {
         // get audio dir
-        let audioDir: AnyObject = NSSearchPathForDirectoriesInDomains( NSSearchPathDirectory.DocumentDirectory,  NSSearchPathDomainMask.UserDomainMask, true)[0]
+        let audioDir: String = NSSearchPathForDirectoriesInDomains( NSSearchPathDirectory.DocumentDirectory,  NSSearchPathDomainMask.UserDomainMask, true)[0]
         let dataFormatter = NSDateFormatter()
         dataFormatter.dateFormat = "ddMMyyyy-HHmmss"
         
@@ -44,11 +44,15 @@ class RecordSoundsViewController: UIViewController {
         let audioUrl = NSURL.fileURLWithPathComponents([audioDir, fileName])
         
         // start new audio session & record!
-        var audioSession: AVAudioSession = AVAudioSession.sharedInstance()
-        audioSession.setCategory(AVAudioSessionCategoryPlayAndRecord, error: nil)
+        let audioSession: AVAudioSession = AVAudioSession.sharedInstance()
+        do {
+            try audioSession.setCategory(AVAudioSessionCategoryPlayAndRecord)
+        } catch _ {
+        }
         
-        audioRecorder = AVAudioRecorder(URL: audioUrl, settings: nil, error: nil)
+        audioRecorder = try? AVAudioRecorder(URL: audioUrl!, settings: ["":""])
         audioRecorder.meteringEnabled = true
+        audioRecorder.delegate = self
         audioRecorder.record()
         
         stopRecordingButton.hidden = false
@@ -60,6 +64,10 @@ class RecordSoundsViewController: UIViewController {
             audioRecorder.stop()
         }
         stopRecordingButton.hidden = true
+    }
+    
+    func audioRecorderDidFinishRecording(recorder: AVAudioRecorder, successfully flag: Bool) {
+        performSegueWithIdentifier("segueToPlaySounds", sender: self)
     }
 }
 
