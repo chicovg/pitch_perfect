@@ -65,15 +65,18 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
             stopRecordingButton.hidden = false
             recording = true
             recordingLabel.text = "Recording!"
+            startAnimatingRecordButton()
         } else if (paused) {
             audioRecorder.record()
             recording = true
             paused = false
             recordingLabel.text = "Recording!"
+            startAnimatingRecordButton()
         } else {
             audioRecorder.pause()
             paused = true
             recordingLabel.text = "Resume!"
+            stopAnimatingRecordButton()
         }
     }
     
@@ -83,6 +86,7 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
         stopRecordingButton.hidden = true
         recording = false
         paused = false
+        stopAnimatingRecordButton()
     }
     
     func audioRecorderDidFinishRecording(recorder: AVAudioRecorder, successfully flag: Bool) {
@@ -99,6 +103,28 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
         }
         recordingLabel.text = "Record!"
         recording = false
+    }
+    
+    private func startAnimatingRecordButton(){
+        recordButton.alpha = 1.0
+        UIView.animateWithDuration(0.75,
+            delay: 0,
+            options: [UIViewAnimationOptions.CurveEaseInOut, UIViewAnimationOptions.Repeat,
+                UIViewAnimationOptions.Autoreverse, UIViewAnimationOptions.AllowUserInteraction],
+            animations: {
+                Void in
+                self.recordButton.alpha = 0.5
+            }, completion: nil)
+    }
+    
+    private func stopAnimatingRecordButton(){
+        UIView.animateWithDuration(0.12,
+            delay: 0,
+            options: [UIViewAnimationOptions.CurveEaseInOut, UIViewAnimationOptions.BeginFromCurrentState],
+            animations: {
+                Void in
+                self.recordButton.alpha = 1.0
+            }, completion: nil)
     }
 }
 

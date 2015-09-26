@@ -91,11 +91,19 @@
                                     <action selector="playAtSlowerRate:" destination="GGf-ZH-4Ub" eventType="touchUpInside" id="0HP-Ck-E7z"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XCe-Iz-ptk">
-                                <rect key="frame" x="273" y="390" width="55" height="50"/>
-                                <state key="normal" title=" " image="stop"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="htn-q4-G6I">
+                                <rect key="frame" x="450" y="100" width="100" height="100"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="100" id="Mj5-0O-fWS">
+                                        <variation key="heightClass=compact" constant="80"/>
+                                    </constraint>
+                                    <constraint firstAttribute="width" constant="100" id="jae-Sj-IQz">
+                                        <variation key="heightClass=compact" constant="80"/>
+                                    </constraint>
+                                </constraints>
+                                <state key="normal" image="fast"/>
                                 <connections>
-                                    <action selector="stopPlayingSounds:" destination="GGf-ZH-4Ub" eventType="touchUpInside" id="FeG-AB-cQc"/>
+                                    <action selector="playAtFasterRate:" destination="GGf-ZH-4Ub" eventType="touchUpInside" id="7ya-ek-jrS"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IkI-Zt-UrP">
@@ -137,19 +145,11 @@
                                     <action selector="playWithLowerPitch:" destination="GGf-ZH-4Ub" eventType="touchUpInside" id="nSb-9N-3SZ"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="htn-q4-G6I">
-                                <rect key="frame" x="450" y="100" width="100" height="100"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="100" id="Mj5-0O-fWS">
-                                        <variation key="heightClass=compact" constant="80"/>
-                                    </constraint>
-                                    <constraint firstAttribute="width" constant="100" id="jae-Sj-IQz">
-                                        <variation key="heightClass=compact" constant="80"/>
-                                    </constraint>
-                                </constraints>
-                                <state key="normal" image="fast"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XCe-Iz-ptk">
+                                <rect key="frame" x="273" y="390" width="55" height="50"/>
+                                <state key="normal" title=" " image="stop"/>
                                 <connections>
-                                    <action selector="playAtFasterRate:" destination="GGf-ZH-4Ub" eventType="touchUpInside" id="7ya-ek-jrS"/>
+                                    <action selector="stopPlayingSounds:" destination="GGf-ZH-4Ub" eventType="touchUpInside" id="FeG-AB-cQc"/>
                                 </connections>
                             </button>
                         </subviews>
