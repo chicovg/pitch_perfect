@@ -15,7 +15,7 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
     @IBOutlet weak var stopRecordingButton: UIButton!
     @IBOutlet weak var recordingLabel: UILabel!
     
-    var audioRecorder:AVAudioRecorder!
+    var audioRecorder:AVAudioRecorder?
     var recording = false
     var paused = false
     
@@ -40,7 +40,7 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "segueToPlaySounds" {
             let playSoundsVC: PlaySoundsViewController = segue.destinationViewController as! PlaySoundsViewController
-            playSoundsVC.recordedAudio = sender as! RecordedAudio
+            playSoundsVC.recordedAudio = sender as? RecordedAudio
         }
     }
 
@@ -55,46 +55,51 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
             do {
                 try audioSession.setCategory(AVAudioSessionCategoryPlayAndRecord)
             } catch _ {
+                print("Could not open audio session.")
             }
             
             audioRecorder = try? AVAudioRecorder(URL: audioUrl!, settings: ["":""])
-            audioRecorder.meteringEnabled = true
-            audioRecorder.delegate = self
-            audioRecorder.record()
+            audioRecorder!.meteringEnabled = true
+            audioRecorder!.delegate = self
+            audioRecorder!.record()
             
             stopRecordingButton.hidden = false
             recording = true
             recordingLabel.text = "Recording!"
             startAnimatingRecordButton()
         } else if (paused) {
-            audioRecorder.record()
-            recording = true
-            paused = false
-            recordingLabel.text = "Recording!"
-            startAnimatingRecordButton()
+            if let audioRecorder = audioRecorder {
+                audioRecorder.record()
+                recording = true
+                paused = false
+                recordingLabel.text = "Recording!"
+                startAnimatingRecordButton()
+            }
         } else {
-            audioRecorder.pause()
-            paused = true
-            recordingLabel.text = "Resume!"
-            stopAnimatingRecordButton()
+            if let audioRecorder = audioRecorder {
+                audioRecorder.pause()
+                paused = true
+                recordingLabel.text = "Resume!"
+                stopAnimatingRecordButton()
+            }
         }
     }
     
     
     @IBAction func stopRecording(sender: UIButton) {
-        audioRecorder.stop()
-        stopRecordingButton.hidden = true
-        recording = false
-        paused = false
-        stopAnimatingRecordButton()
+        if let audioRecorder = audioRecorder {
+            audioRecorder.stop()
+            stopRecordingButton.hidden = true
+            recording = false
+            paused = false
+            stopAnimatingRecordButton()
+        }
     }
     
     func audioRecorderDidFinishRecording(recorder: AVAudioRecorder, successfully flag: Bool) {
+        // If record was successful, segue to PlaySoundsViewController passing a RecordedAudio object
         if(flag) {
-            let recordedAudio = RecordedAudio()
-            recordedAudio.recordedAudioFileURL = recorder.url
-            recordedAudio.title = recorder.url.lastPathComponent
-            
+            let recordedAudio = RecordedAudio(withFileAndTitle: recorder.url, title: recorder.url.lastPathComponent!)
             performSegueWithIdentifier("segueToPlaySounds", sender: recordedAudio)
         } else {
             print("Recording unsuccessful!")
@@ -105,6 +110,7 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
         recording = false
     }
     
+    // start an animation which make the record button appear to blink
     private func startAnimatingRecordButton(){
         recordButton.alpha = 1.0
         UIView.animateWithDuration(0.75,
@@ -117,6 +123,7 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
             }, completion: nil)
     }
     
+    // stop the blinking animation on the record button
     private func stopAnimatingRecordButton(){
         UIView.animateWithDuration(0.12,
             delay: 0,
