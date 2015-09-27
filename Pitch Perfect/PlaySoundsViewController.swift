@@ -65,21 +65,35 @@ class PlaySoundsViewController: UIViewController {
         Helper function to play audio at the specified pitch
     */
     private func playAudioWithTimePitch(pitch: Float) {
-        stopPlayback()
-        
-        // create audio player node and time pitch effect node
-        pitchPlayer = AVAudioPlayerNode()
         let timePitch = AVAudioUnitTimePitch()
         timePitch.pitch = pitch
+        playAudio(timePitch)
+    }
+    
+    /*
+        Helper function to play audio at the specified speed
+    */
+    private func playAudioWithRate(rate: Float) {
+        let varispeed = AVAudioUnitVarispeed()
+        varispeed.rate = rate
+        playAudio(varispeed)
+    }
+    
+    /*
+        Helper function to play audio with the specified effect
+    */
+    private func playAudio(effect: AVAudioNode) {
+        stopPlayback()
+        pitchPlayer = AVAudioPlayerNode()
         
         // attach player and effect node to audio engine
         if let audioEngine = audioEngine  {
             audioEngine.attachNode(pitchPlayer!)
-            audioEngine.attachNode(timePitch)
+            audioEngine.attachNode(effect)
             
             if let myAudioFile = myAudioFile {
-                audioEngine.connect(pitchPlayer!, to: timePitch, format: myAudioFile.processingFormat)
-                audioEngine.connect(timePitch, to: audioEngine.outputNode, format: myAudioFile.processingFormat)
+                audioEngine.connect(pitchPlayer!, to: effect, format: myAudioFile.processingFormat)
+                audioEngine.connect(effect, to: audioEngine.outputNode, format: myAudioFile.processingFormat)
                 
                 pitchPlayer!.scheduleFile(myAudioFile, atTime: nil, completionHandler: {
                     Void in
@@ -98,42 +112,6 @@ class PlaySoundsViewController: UIViewController {
         }
     }
     
-    /*
-        Helper function to play audio at the specified speed
-    */
-    private func playAudioWithRate(rate: Float) {
-        stopPlayback()
-        
-        // create audio player node and varispeed effect node
-        pitchPlayer = AVAudioPlayerNode()
-        let varispeed = AVAudioUnitVarispeed()
-        varispeed.rate = rate
-        
-        // attach player and effect node to audio engine
-        if let audioEngine = audioEngine  {
-            audioEngine.attachNode(pitchPlayer!)
-            audioEngine.attachNode(varispeed)
-            
-            if let myAudioFile = myAudioFile {
-                audioEngine.connect(pitchPlayer!, to: varispeed, format: myAudioFile.processingFormat)
-                audioEngine.connect(varispeed, to: audioEngine.outputNode, format: myAudioFile.processingFormat)
-                
-                pitchPlayer!.scheduleFile(myAudioFile, atTime: nil, completionHandler: {
-                    Void in
-                    self.stopButton.enabled = false
-                })
-            }
-            
-            // start audio engine and play audio
-            do {
-                try audioEngine.start()
-                pitchPlayer!.play()
-                stopButton.enabled = true
-            } catch _ {
-                print("Could not start audio engine!")
-            }
-        }
-    }
     
     /*
         Helper function to stop audio engine

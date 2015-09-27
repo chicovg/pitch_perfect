@@ -32,6 +32,7 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
     }
     
     override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
         recordButton.enabled = true
         stopRecordingButton.hidden = true
         
@@ -103,6 +104,7 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
             performSegueWithIdentifier("segueToPlaySounds", sender: recordedAudio)
         } else {
             print("Recording unsuccessful!")
+            showAlert("There was a problem with the recording, please try again.")
             recordButton.enabled = true
             stopRecordingButton.hidden = true
         }
@@ -110,7 +112,7 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
         recording = false
     }
     
-    // start an animation which make the record button appear to blink
+    /* start an animation which make the record button appear to blink */
     private func startAnimatingRecordButton(){
         recordButton.alpha = 1.0
         UIView.animateWithDuration(0.75,
@@ -123,7 +125,7 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
             }, completion: nil)
     }
     
-    // stop the blinking animation on the record button
+    /* stop the blinking animation on the record button */
     private func stopAnimatingRecordButton(){
         UIView.animateWithDuration(0.12,
             delay: 0,
@@ -133,5 +135,13 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
                 self.recordButton.alpha = 1.0
             }, completion: nil)
     }
+    
+    /* show alert with the specified message */
+    private func showAlert(message: String) {
+        let alert = UIAlertController(title: "An error occurred!", message: message, preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil))
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
+
 }
 
